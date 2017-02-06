@@ -65,16 +65,19 @@ public class BankAccountTest {
 		String accountRefNumber = "1234567890";
 		double amount = 100;
 		try {
-			Operation operation = bankAccountService.withDrawal(
+			Operation operationDeposit = bankAccountService.withDrawal(
+					accountRefNumber, amount);
+
+			Operation operationWithDrawl = bankAccountService.withDrawal(
 					accountRefNumber, amount);
 
 			Operation lastOperationFromPersistence = getLastOperationFromPersistence(accountRefNumber);
 
 			assertTrue("Debit amount should be negative",
-					operation.getAmount() < 0);
+					operationWithDrawl.getAmount() < 0);
 			assertTrue("Debit amount should be -100",
-					operation.getAmount() == -100.0);
-			assertTrue(operation.equals(lastOperationFromPersistence));
+					operationWithDrawl.getAmount() == -100.0);
+			assertTrue(operationWithDrawl.equals(lastOperationFromPersistence));
 
 		} catch (AccountOperationException e) {
 			fail("Fail with message: " + e.getMessage());
@@ -122,7 +125,7 @@ public class BankAccountTest {
 			
 			assertTrue(operation.equals(lastOperationFromPersistence));
 
-			assertTrue(operation.getAccount().getBalance() == 1100);
+			assertTrue(operation.getAccount().getBalance() == 1000);
 		} catch (AccountOperationException e) {
 			fail("Fail with message: " + e.getMessage());
 		} catch (Exception e) {
